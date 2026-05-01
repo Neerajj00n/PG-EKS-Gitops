@@ -1,0 +1,14 @@
+apiVersion: v2
+name: backend
+description: Django backend application Helm chart with AWS ALB ingress
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - django
+  - python
+  - backend
+  - aws
+maintainers:
+  - name: DevOps
+    email: devops@example.com
