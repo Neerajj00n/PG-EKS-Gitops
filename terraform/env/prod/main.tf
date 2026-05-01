@@ -105,6 +105,7 @@ module "eks" {
 module "iam" {
   source = "../../modules/iam"
   project_name = var.project_name
+  oidc_provider_arn = module.eks.oidc_provider_url
   tags = {
     Project = var.project_name
   }

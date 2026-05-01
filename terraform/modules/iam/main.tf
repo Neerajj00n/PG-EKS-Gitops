@@ -89,7 +89,7 @@ resource "aws_iam_role" "backend_irsa" {
       {
         Effect = "Allow"
         Principal = {
-          Federated = var.oidc_provider_arn
+          Federated = var.oidc_provider_arn 
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
@@ -123,4 +123,35 @@ resource "aws_iam_role_policy" "backend_secrets" {
 
 output "backend_irsa_role_arn" {
   value = aws_iam_role.backend_irsa.arn
+}
+
+
+# terraform/modules/iam/alb_controller_irsa.tf
+
+resource "aws_iam_role" "alb_controller" {
+  name = "aws-load-balancer-controller"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = var.oidc_provider_arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# Attach AWS managed policy
+resource "aws_iam_role_policy_attachment" "alb_controller" {
+  role       = aws_iam_role.alb_controller.name
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
 }

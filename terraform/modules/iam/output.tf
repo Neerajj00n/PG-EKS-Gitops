@@ -25,3 +25,6 @@ output "node_ecr_policy" {
   
 # }
 
+output "backend_irsa_role_arn" {
+  value = aws_iam_role.backend_irsa.arn
+}
