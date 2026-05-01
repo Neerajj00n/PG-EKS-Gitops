@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backend
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"  # Deploy after infra (0)
+spec:
+  project: default
+  
+  # Where is the Helm chart?
+  source:
+    repoURL: https://github.com/YOUR_ORG/YOUR_REPO  # ← CHANGE THIS
+    targetRevision: main
+    path: helm/backend/  # Your Helm chart location
+    helm:
+      # Which values file to use based on environment
+      valueFiles:
+        - values.yaml        # Base values
+        - values-prod.yaml   # Production overrides
+      
+      # Can also pass values directly
+      # parameters:
+      #   - name: replicaCount
+      #     value: "3"
+  
+  # Deploy to backend namespace
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: backend
+  
+  syncPolicy:
+    # Auto-sync = automatically deploy when Git changes
+    automated:
+      prune: true       # Delete pods if Helm chart removes them
+      selfHeal: true    # Revert manual kubectl changes
+      allow:
+        - empty: true   # Allow empty Helm chart (no resources)
+    
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+    
+    # If sync fails, retry
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  
+  # Health assessment
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas  # Ignore HPA managed replicas

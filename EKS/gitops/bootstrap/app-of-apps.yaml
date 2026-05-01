@@ -3,19 +3,29 @@ kind: Application
 metadata:
   name: app-of-apps
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   
   source:
-    repoURL: https://github.com/you/your-repo
+    repoURL: https://github.com/YOUR_ORG/YOUR_REPO  # ← CHANGE THIS
     targetRevision: main
-    path: gitops/  # Points to gitops/ folder
-  
+    path: gitops/apps/
+
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
   
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: true       # If app is removed from Git, delete it from cluster
+      selfHeal: true    # If someone manually changes cluster, revert to Git
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

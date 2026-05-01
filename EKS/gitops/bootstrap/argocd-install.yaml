@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+---
+# This installs ArgoCD via Helm
+# Why Helm? Because we want to manage ArgoCD's own configuration
+# After this is installed, ArgoCD manages everything else via GitOps
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"  # Deploy first (lowest number)
+spec:
+  project: default
+  
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 6.0.0  # Pin to specific version
+    helm:
+      values: |
+        # ArgoCD server settings
+        server:
+          insecure: false
+          ingress:
+            enabled: false  # Set to true if you want external access
+            ingressClassName: alb
+            hosts:
+              - argocd.yourdomain.com
+          
+          # Notification settings
+          notifications:
+            enabled: true
+        
+        # Application controller
+        controller:
+          replicas: 1
+        
+        # Redis for caching
+        redis:
+          enabled: true
+        
+        # RBAC settings
+        rbac:
+          create: true
+        
+        # Service account
+        serviceAccount:
+          create: true
+        
+        # Enable notifications via Slack, email, etc (optional)
+        # See: https://argocd-docs.readthedocs.io/en/stable/operator-manual/notifications/
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  
+  syncPolicy:
+    automated:
+      prune: true       # Delete resources if removed from Git
+      selfHeal: true    # Revert manual changes
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

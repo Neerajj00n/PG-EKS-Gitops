@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Deploy before applications
+spec:
+  project: default
+  
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki-stack
+    targetRevision: 2.10.0
+    helm:
+      values: |
+        # Loki - log aggregation
+        loki:
+          enabled: true
+          replicas: 1
+          
+          persistence:
+            enabled: true
+            size: 20Gi
+          
+          config:
+            auth_enabled: false
+            ingester:
+              chunk_idle_period: 3m
+              max_chunk_age: 1h
+        
+        # Promtail - log shipper (runs on every node)
+        promtail:
+          enabled: true
+          config:
+            clients:
+              - url: http://loki:3100/loki/api/v1/push
+            scrape_configs:
+              - job_name: kubernetes-pods
+                kubernetes_sd_configs:
+                  - role: pod
+        
+        # Grafana data source for Loki
+        grafana:
+          enabled: false  # We'll use the grafana from kube-prometheus-stack
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

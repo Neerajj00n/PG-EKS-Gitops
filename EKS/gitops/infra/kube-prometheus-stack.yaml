@@ -1,0 +1,101 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Deploy before applications
+spec:
+  project: default
+  
+  source:
+    # Official Prometheus Community Helm repo
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 56.0.0  # Pin to specific version
+    helm:
+      values: |
+        # Prometheus - metrics scraping
+        prometheus:
+          prometheusSpec:
+            # Retention period
+            retention: 30d
+            
+            # Storage size
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 50Gi
+            
+            # Scrape interval
+            scrapeInterval: 30s
+            
+            # Service monitors to scrape
+            serviceMonitorSelectorNilUsesHelmValues: false
+        
+        # Grafana - dashboards and visualization
+        grafana:
+          enabled: true
+          replicas: 1
+          
+          # Admin credentials
+          adminPassword: admin  # CHANGE THIS in prod!
+          
+          # Persistence
+          persistence:
+            enabled: true
+            size: 10Gi
+          
+          # Datasources (automatically added)
+          datasources:
+            datasources.yaml:
+              apiVersion: 1
+              datasources:
+                - name: Prometheus
+                  type: prometheus
+                  url: http://kube-prometheus-stack-prometheus:9090
+                  isDefault: true
+        
+        # AlertManager - alert routing
+        alertmanager:
+          enabled: true
+          alertmanagerSpec:
+            storage:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 10Gi
+        
+        # Node Exporter - node metrics
+        nodeExporter:
+          enabled: true
+        
+        # kube-state-metrics - Kubernetes state metrics
+        kubeStateMetrics:
+          enabled: true
+        
+        # Prometheus Operator
+        prometheusOperator:
+          enabled: true
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
