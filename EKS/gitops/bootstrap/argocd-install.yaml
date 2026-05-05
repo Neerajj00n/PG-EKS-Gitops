@@ -22,38 +22,32 @@ spec:
     targetRevision: 6.0.0  # Pin to specific version
     helm:
       values: |
-        # ArgoCD server settings
+        # ADD THIS BLOCK - this is what actually sets the ConfigMap
+        configs:
+          params:
+            server.insecure: "true"    # ← correct location
+        
         server:
-          insecure: false
+          # insecure: true  ← this does nothing in chart v6.x, remove it
           ingress:
-            enabled: false  # Set to true if you want external access
+            enabled: false
             ingressClassName: alb
             hosts:
-              - argocd.yourdomain.com
-          
-          # Notification settings
+              - argocd.glodios.com
           notifications:
             enabled: true
         
-        # Application controller
         controller:
           replicas: 1
         
-        # Redis for caching
         redis:
           enabled: true
         
-        # RBAC settings
         rbac:
           create: true
         
-        # Service account
         serviceAccount:
           create: true
-        
-        # Enable notifications via Slack, email, etc (optional)
-        # See: https://argocd-docs.readthedocs.io/en/stable/operator-manual/notifications/
-  
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

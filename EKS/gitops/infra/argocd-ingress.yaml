@@ -9,8 +9,9 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
-    alb.ingress.kubernetes.io/healthcheck-path: "/"
-    alb.ingress.kubernetes.io/healthcheck-protocol: "HTTPS"
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP   
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz   
 spec:
   ingressClassName: alb
   rules:
@@ -23,4 +24,4 @@ spec:
           service:
             name: argocd-server
             port:
-              number: 443
+              number: 80
