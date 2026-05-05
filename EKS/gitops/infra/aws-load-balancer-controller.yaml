@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://aws.github.io/eks-charts
     chart: aws-load-balancer-controller
-    targetRevision: 2.7.0
+    targetRevision: 3.2.2
     helm:
       values: |
         clusterName: glodios-eks-cluster
