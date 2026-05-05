@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/Neerajj00n/PG-EKS-Gitops.git # ← CHANGE THIS
     targetRevision: main
-    path: /EKS/gitops/infra/  # All infra manifests here
+    path: EKS/gitops/infra/  # All infra manifests here
   
   destination:
     server: https://kubernetes.default.svc
