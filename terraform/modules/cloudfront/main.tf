@@ -71,7 +71,7 @@ resource "aws_cloudfront_distribution" "CloudFrontDistributionOnboarding" {
         "onboarding.${var.domain}"
     ]
     origin {
-        domain_name = "onboarding.${var.domain}.s3.ap-south-1.amazonaws.com"
+        domain_name = "onboarding.${var.domain}.s3.us-east-1.amazonaws.com"
         origin_id = "onboarding.${var.domain}"
          s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.cf.cloudfront_access_identity_path

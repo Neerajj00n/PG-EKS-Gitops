@@ -12,7 +12,7 @@ resource "random_password" "db_password" {
 # Store credentials in Secrets Manager
 # -----------------------------------------------
 resource "aws_secretsmanager_secret" "postgres" {
-  name                    = "${var.project_name}/postgres"
+  name                    = "${var.project_name}/postgresdb"
   description             = "PostgreSQL credentials for ${var.project_name}"
   recovery_window_in_days = 7
 }
@@ -50,7 +50,7 @@ resource "aws_security_group" "postgres" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [module.sg.node_sg_id]  # only EKS nodes
+    security_groups = [var.node_sg_id]  # only EKS nodes
     description     = "EKS nodes to RDS"
   }
 
@@ -70,7 +70,7 @@ resource "aws_security_group" "postgres" {
 resource "aws_db_instance" "postgres" {
   identifier        = "${var.project_name}-postgres"
   engine            = "postgres"
-  engine_version    = "16.2"
+  engine_version    = "16.8"
   instance_class    = "db.t3.micro"
   allocated_storage = 20
   storage_type      = "gp3"
@@ -88,11 +88,4 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot    = true    # set false in real prod
 
   tags = { Name = "${var.project_name}-prod-postgres"}
-}
-
-# -----------------------------------------------
-# Output secret ARN — needed for ESO IRSA policy
-# -----------------------------------------------
-output "postgres_secret_arn" {
-  value = aws_secretsmanager_secret.postgres.arn
 }

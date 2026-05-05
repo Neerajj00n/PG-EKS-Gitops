@@ -14,19 +14,21 @@ terraform {
       source  = "hashicorp/tls"
       version = "~> 4.0"
     }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.20"
+    }
   }
 
   required_version = ">= 1.2.0"
 }
 
 provider "aws" {
-  region  = "ap-south-1"
-}
-
-provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 }
+
 
 
 module "vpc" {
@@ -36,7 +38,7 @@ module "vpc" {
   name = var.project_name
   cidr = "10.0.0.0/16"
 
-  azs             = ["ap-south-1a", "ap-south-1b"]
+  azs             = ["us-east-1a", "us-east-1b"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
 
@@ -68,6 +70,15 @@ module "eks" {
   node_cni_policy = module.iam.node_cni_policy
   node_worker_policy = module.iam.node_worker_policy
   node_ecr_policy = module.iam.node_ecr_policy
+  cluster_creator_arn = "arn:aws:iam::887709589787:user/terraform-deployment-user"
+  additional_users = [
+    {
+       userarn  = "arn:aws:iam::887709589787:user/neeraj-joon"
+       username = "neeraj-joon"
+      groups   = ["system:masters"]
+     }
+  ]
+
   disk_size_app = 20
   disk_size_obs = 30
   
@@ -105,7 +116,8 @@ module "eks" {
 module "iam" {
   source = "../../modules/iam"
   project_name = var.project_name
-  oidc_provider_arn = module.eks.oidc_provider_url
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
   tags = {
     Project = var.project_name
   }
@@ -117,7 +129,32 @@ module "rds" {
   project_name = var.project_name
   private_subnet_ids = module.vpc.private_subnets
   vpc_id = module.vpc.vpc_id
+  node_sg_id = module.eks.node_sg_id
   
+}
+
+module "route53" {
+  source = "../../modules/route53"
+  project_name = var.project_name
+  domain = var.domain
+  vpc_id = module.vpc.vpc_id
+  ACCOUNT_ID = var.ACCOUNT_ID
+  cfd_frontend_domain_name = module.cloudfront.cfd_frontend_domain_name
+  cfd_onboarding_domain_name = module.cloudfront.cfd_onboarding_domain_name
+
+    providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
+  
+}
+
+module "cloudfront" {
+  source = "../../modules/cloudfront"
+  project_name = var.project_name
+  domain = var.domain
+  cloudfront_cert = module.route53.cloudfront_cert
+  ACCOUNT_ID = var.ACCOUNT_ID
+
 }
 
 resource "aws_ecr_repository" "backend" {

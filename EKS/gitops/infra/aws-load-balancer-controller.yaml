@@ -14,11 +14,11 @@ spec:
     targetRevision: 2.7.0
     helm:
       values: |
-        clusterName: prod-eks-cluster
+        clusterName: glodios-eks-cluster
         serviceAccount:
           create: true
           annotations:
-            eks.amazonaws.com/role-arn: "arn:aws:iam::123456789:role/aws-load-balancer-controller"
+            eks.amazonaws.com/role-arn: "arn:aws:iam::887709589787:role/aws-load-balancer-controller"
   
   destination:
     server: https://kubernetes.default.svc

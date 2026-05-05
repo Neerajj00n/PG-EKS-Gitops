@@ -69,7 +69,7 @@ resource "aws_iam_role_policy_attachment" "node_ecr_policy" {
 }
 
 resource "aws_iam_instance_profile" "node" {
-  name = "${var.project_name}-eks-node-profile"
+  name = "${var.project_name}-eks-node-profileok"
   role = aws_iam_role.node_group.name
 }
 
@@ -121,9 +121,7 @@ resource "aws_iam_role_policy" "backend_secrets" {
   })
 }
 
-output "backend_irsa_role_arn" {
-  value = aws_iam_role.backend_irsa.arn
-}
+
 
 
 # terraform/modules/iam/alb_controller_irsa.tf

@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: 123456789.dkr.ecr.us-east-1.amazonaws.com/backend
+  repository: 887709589787.dkr.ecr.us-east-1.amazonaws.com/production/backend
   pullPolicy: IfNotPresent
   tag: "v1.0.0"
 
@@ -13,13 +13,13 @@ serviceAccount:
   create: true
   annotations:
     # For IRSA - IAM Roles for Service Accounts
-    eks.amazonaws.com/role-arn: "arn:aws:iam::123456789:role/backend-irsa-role"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::887709589787:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/B778A621DDFFCB3B72981CE96D7179DF"
   name: ""
 
 env:
   LOG_LEVEL: "info"
   DEBUG: "False"
-  ALLOWED_HOSTS: "api.yourdomain.com"
+  ALLOWED_HOSTS: "api.glodios.com"
   API_TIMEOUT: "30"
   MAX_CONNECTIONS: "100"
   FEATURE_FLAG_NEW_AUTH: "true"
@@ -66,7 +66,7 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     # If using ACM certificate
-    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:123456789:certificate/xxxxx"
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
     # Health check configuration
     alb.ingress.kubernetes.io/healthcheck-path: "/health"
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
@@ -74,7 +74,7 @@ ingress:
     alb.ingress.kubernetes.io/healthy-threshold-count: "2"
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
   hosts:
-    - host: api.yourdomain.com
+    - host: api.glodios.com
       paths:
         - path: /
           pathType: Prefix
@@ -116,7 +116,7 @@ tolerations: []
 # Environment variables
 env:
   DEBUG: "False"
-  ALLOWED_HOSTS: "api.yourdomain.com"
+  ALLOWED_HOSTS: "api.glodios.com"
   LOG_LEVEL: "info"
 
 # Secret environment variables (via External Secrets Operator or manual secrets)

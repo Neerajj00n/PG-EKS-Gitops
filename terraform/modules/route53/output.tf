@@ -8,9 +8,5 @@ output "alb_cert" {
 }
 
 output "cloudfront_cert" {
-    value = {
-        arn = aws_acm_certificate.cloudfront_cert.arn
-        domain_name = aws_acm_certificate.cloudfront_cert.domain_name
-        status = aws_acm_certificate.cloudfront_cert.status
-    }
+    value = aws_acm_certificate.cloudfront_cert.arn
 }

@@ -13,7 +13,7 @@ resource "aws_kms_key" "eks" {
 }
 
 resource "aws_kms_alias" "eks" {
-  name          = "alias/${var.project_name}-eks"
+  name          = "alias/${var.project_name}-eks-kms"
   target_key_id = aws_kms_key.eks.key_id
 }
 
@@ -35,7 +35,7 @@ resource "aws_eks_cluster" "maincluster" {
   version  = var.cluster_version
 
   access_config {
-    authentication_mode = "CONFIG_MAP"
+    authentication_mode = "API_AND_CONFIG_MAP"
   }
 
   vpc_config {
@@ -45,6 +45,7 @@ resource "aws_eks_cluster" "maincluster" {
     endpoint_private_access = true
     public_access_cidrs     = var.public_access_cidrs
   }
+
 
   # Fix 4: KMS envelope encryption was missing
   encryption_config {

@@ -74,7 +74,7 @@ resource "aws_acm_certificate" "cloudfront_cert" {
   }
 }
 
-# ── Certificate for ALB (your region, e.g. ap-south-1) ──
+# ── Certificate for ALB (your region, e.g. us-east-1) ──
 resource "aws_acm_certificate" "alb_cert" {
   domain_name       = var.domain
   subject_alternative_names = ["*.${var.domain}"]
