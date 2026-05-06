@@ -17,6 +17,7 @@ loki:
   persistence:
     enabled: true
     size: 20Gi
+    storageClassName: gp3
 
   config:
     auth_enabled: false

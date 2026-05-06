@@ -44,6 +44,7 @@ grafana:
   persistence:
     enabled: true
     size: 10Gi
+    storageClassName: gp3
 
   datasources:
     datasources.yaml:
