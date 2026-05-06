@@ -61,6 +61,7 @@ grafana:
           url: http://loki.logging.svc.cluster.local:3100 
 
   ingress:
+    name: grafana-ingress
     enabled: true
     ingressClassName: alb
     namespace: monitoring
@@ -72,6 +73,8 @@ grafana:
       alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
       alb.ingress.kubernetes.io/healthcheck-path: /api/health
       alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/group.name: "glodios-alb-group"
+
     hosts:
       - grafana.glodios.com
     path: /

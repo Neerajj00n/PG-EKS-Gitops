@@ -11,7 +11,9 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP   
-    alb.ingress.kubernetes.io/healthcheck-path: /healthz   
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/group.name: "glodios-alb-group"
+
 spec:
   ingressClassName: alb
   rules:
