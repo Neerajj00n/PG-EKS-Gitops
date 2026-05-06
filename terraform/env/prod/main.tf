@@ -100,7 +100,7 @@ module "eks" {
   obs_nodes = {
     instance_type = "m5.large"
     min           = 1 #2 
-    max           = 2 #4
+    max           = 3 #4
     desired       = 1 #2
     taint_key     = "dedicated"
     taint_value   = "observability"
