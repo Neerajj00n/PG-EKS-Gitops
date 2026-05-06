@@ -14,7 +14,7 @@ prometheus:
         effect: "NoSchedule"
 
     nodeSelector:
-      dedicated: observability
+      role: observability
 
     storageSpec:
       volumeClaimTemplate:
@@ -39,7 +39,7 @@ grafana:
       effect: "NoSchedule"
 
   nodeSelector:
-    dedicated: observability
+     role: observability
 
   persistence:
     enabled: true
@@ -71,7 +71,7 @@ alertmanager:
         effect: "NoSchedule"
 
     nodeSelector:
-      dedicated: observability
+      role: observability
 
     storage:
       volumeClaimTemplate:
@@ -93,14 +93,13 @@ prometheusOperator:
       effect: "NoSchedule"
 
   nodeSelector:
-    dedicated: observability
+    role: observability
 
 # ============================================================
 # Node Exporter — DaemonSet, runs on ALL nodes
 # ============================================================
 nodeExporter:
   enabled: true
-  # No nodeSelector — must run everywhere to collect node metrics
   tolerations:
     - key: "dedicated"
       operator: "Equal"
