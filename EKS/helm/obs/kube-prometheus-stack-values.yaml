@@ -28,6 +28,11 @@ prometheus:
 # Grafana
 # ============================================================
 grafana:
+  deploymentStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   enabled: true
   replicas: 1
   adminPassword: admin
@@ -57,6 +62,23 @@ grafana:
         - name: Loki
           type: loki
           url: http://loki.logging.svc.cluster.local:3100 
+
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    namespace: monitoring
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: '443'
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
+      alb.ingress.kubernetes.io/healthcheck-path: /api/health
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    hosts:
+      - grafana.glodios.com
+    path: /
+    pathType: Prefix
 
 # ============================================================
 # Alertmanager
@@ -112,19 +134,3 @@ nodeExporter:
 kubeStateMetrics:
   enabled: true
 
-ingress:
-  enabled: true
-  ingressClassName: alb
-  namespace: monitoring
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
-    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
-    alb.ingress.kubernetes.io/healthcheck-path: /api/health
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-  hosts:
-    - grafana.glodios.com
-  path: /
-  pathType: Prefix
