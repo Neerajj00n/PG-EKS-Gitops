@@ -21,7 +21,10 @@ variable "cfd_frontend_domain_name" {
 variable "cfd_onboarding_domain_name" {
     type = string
 }
-
+variable "alb_dns" {
+    type = string
+  
+}
 
 
 

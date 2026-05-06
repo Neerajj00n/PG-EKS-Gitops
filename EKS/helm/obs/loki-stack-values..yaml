@@ -12,7 +12,7 @@ loki:
       effect: "NoSchedule"
 
   nodeSelector:
-    dedicated: observability
+    role : observability
 
   persistence:
     enabled: true

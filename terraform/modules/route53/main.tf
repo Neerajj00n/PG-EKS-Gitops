@@ -36,7 +36,7 @@ resource "aws_route53_record" "argocd" {
   name    = "argocd.${var.domain}"
   type    = "CNAME"
   ttl     = "300"
-  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+  records = [var.alb_dns] 
 }
 
 resource "aws_route53_record" "backend" {
@@ -44,7 +44,7 @@ resource "aws_route53_record" "backend" {
   name    = "apis.${var.domain}"
   type    = "CNAME"
   ttl     = "300"
-  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+  records = [var.alb_dns] 
 }
 
 resource "aws_route53_record" "grafana" {
@@ -52,7 +52,7 @@ resource "aws_route53_record" "grafana" {
   name    = "grafana.${var.domain}"
   type    = "CNAME"
   ttl     = "300"
-  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+  records = [var.alb_dns] 
 }
 resource "aws_cloudwatch_log_group" "LogsLogGroup" {
     name = "celery-worker-task-log-group"
