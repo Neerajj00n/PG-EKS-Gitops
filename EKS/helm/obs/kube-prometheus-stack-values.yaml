@@ -1,0 +1,130 @@
+# ============================================================
+# Prometheus
+# ============================================================
+prometheus:
+  prometheusSpec:
+    retention: 30d
+    scrapeInterval: 30s
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "observability"
+        effect: "NoSchedule"
+
+    nodeSelector:
+      dedicated: observability
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
+# ============================================================
+# Grafana
+# ============================================================
+grafana:
+  enabled: true
+  replicas: 1
+  adminPassword: admin
+
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "observability"
+      effect: "NoSchedule"
+
+  nodeSelector:
+    dedicated: observability
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://kube-prometheus-stack-prometheus:9090
+          isDefault: true
+        - name: Loki
+          type: loki
+          url: http://loki.logging.svc.cluster.local:3100 
+
+# ============================================================
+# Alertmanager
+# ============================================================
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "observability"
+        effect: "NoSchedule"
+
+    nodeSelector:
+      dedicated: observability
+
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+# ============================================================
+# Prometheus Operator
+# ============================================================
+prometheusOperator:
+  enabled: true
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "observability"
+      effect: "NoSchedule"
+
+  nodeSelector:
+    dedicated: observability
+
+# ============================================================
+# Node Exporter — DaemonSet, runs on ALL nodes
+# ============================================================
+nodeExporter:
+  enabled: true
+  # No nodeSelector — must run everywhere to collect node metrics
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "observability"
+      effect: "NoSchedule"
+
+# ============================================================
+# kube-state-metrics
+# ============================================================
+kubeStateMetrics:
+  enabled: true
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  namespace: monitoring
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:887709589787:certificate/66b19ef6-f639-484c-8f97-571df7bb0dd1"
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+  hosts:
+    - grafana.glodios.com
+  path: /
+  pathType: Prefix

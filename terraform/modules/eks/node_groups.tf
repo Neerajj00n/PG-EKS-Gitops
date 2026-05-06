@@ -56,7 +56,7 @@ resource "aws_eks_node_group" "app_ondemand" {
   node_role_arn   = var.node_group_role_arn
   subnet_ids      = var.private_subnet_ids
   capacity_type   = "ON_DEMAND"    # <-- On-Demand
-
+  
   instance_types = [var.app_ondemand_nodes.instance_type]   # single type is fine for On-Demand
 
   launch_template {

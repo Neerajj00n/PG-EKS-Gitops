@@ -1,0 +1,53 @@
+# ============================================================
+# Loki — log aggregation
+# ============================================================
+loki:
+  enabled: true
+  replicas: 1
+
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "observability"
+      effect: "NoSchedule"
+
+  nodeSelector:
+    dedicated: observability
+
+  persistence:
+    enabled: true
+    size: 20Gi
+
+  config:
+    auth_enabled: false
+    ingester:
+      chunk_idle_period: 3m
+      max_chunk_age: 1h
+
+# ============================================================
+# Promtail — DaemonSet, runs on ALL nodes to ship logs
+# ============================================================
+promtail:
+  enabled: true
+
+  # Tolerate observability nodes so it can collect logs there too
+  # But NO nodeSelector — must run on every node
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "observability"
+      effect: "NoSchedule"
+
+  config:
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+
+# ============================================================
+# Grafana — disabled, using kube-prometheus-stack's Grafana
+# ============================================================
+grafana:
+  enabled: false

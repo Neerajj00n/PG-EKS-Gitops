@@ -115,7 +115,7 @@ resource "aws_iam_role_policy" "backend_secrets" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = "arn:aws:secretsmanager:*:*:secret:backend/*"
+        Resource = "*"
       }
     ]
   })
@@ -141,6 +141,7 @@ resource "aws_iam_role" "alb_controller" {
         Condition = {
           StringEquals = {
             "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(var.oidc_provider_url, "https://", "")}:aud" = "sts.amazonaws.com"
           }
         }
       }
@@ -148,8 +149,20 @@ resource "aws_iam_role" "alb_controller" {
   })
 }
 
-# Attach AWS managed policy
+# Fetch the official LBC policy from GitHub
+data "http" "alb_controller_policy" {
+  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json"
+}
+
+# Create the policy in AWS
+resource "aws_iam_policy" "alb_controller" {
+  name        = "AWSLoadBalancerControllerIAMPolicy"
+  description = "Official IAM policy for AWS Load Balancer Controller"
+  policy      = data.http.alb_controller_policy.response_body
+}
+
+# Attach it to the role — replaces ElasticLoadBalancingFullAccess
 resource "aws_iam_role_policy_attachment" "alb_controller" {
   role       = aws_iam_role.alb_controller.name
-  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+  policy_arn = aws_iam_policy.alb_controller.arn
 }

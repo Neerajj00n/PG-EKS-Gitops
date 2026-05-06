@@ -31,8 +31,29 @@ resource "aws_route53_record" "onboarding" {
   ttl     = "300"
   records = [var.cfd_onboarding_domain_name] 
 }
+resource "aws_route53_record" "argocd" {
+  zone_id = aws_route53_zone.public_zone.zone_id
+  name    = "argocd.${var.domain}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+}
 
-#LOG GROUP
+resource "aws_route53_record" "backend" {
+  zone_id = aws_route53_zone.public_zone.zone_id
+  name    = "apis.${var.domain}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+}
+
+resource "aws_route53_record" "grafana" {
+  zone_id = aws_route53_zone.public_zone.zone_id
+  name    = "grafana.${var.domain}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["k8s-argocd-argocdin-494295b80d-2039609855.us-east-1.elb.amazonaws.com"] 
+}
 resource "aws_cloudwatch_log_group" "LogsLogGroup" {
     name = "celery-worker-task-log-group"
     retention_in_days = 90

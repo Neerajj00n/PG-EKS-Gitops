@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: loki-stack
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
@@ -9,21 +9,20 @@ spec:
   project: default
 
   sources:
-    # Source 1 — the Helm chart from upstream repo
-    - repoURL: https://prometheus-community.github.io/helm-charts
-      chart: kube-prometheus-stack
-      targetRevision: 56.0.0
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: loki-stack
+      targetRevision: 2.10.0
       helm:
         valueFiles:
-          - $values/EKS/helm/obs/kube-prometheus-stack-values.yaml  
+          - $values/EKS/helm/obs/loki-stack-values.yaml
 
-    - repoURL:  https://github.com/Neerajj00n/PG-EKS-Gitops.git   
+    - repoURL: https://github.com/Neerajj00n/PG-EKS-Gitops.git # ← your repo
       targetRevision: HEAD
       ref: values
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: logging
 
   syncPolicy:
     automated:
