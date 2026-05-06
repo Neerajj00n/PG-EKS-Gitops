@@ -141,6 +141,7 @@ module "route53" {
   ACCOUNT_ID = var.ACCOUNT_ID
   cfd_frontend_domain_name = module.cloudfront.cfd_frontend_domain_name
   cfd_onboarding_domain_name = module.cloudfront.cfd_onboarding_domain_name
+  alb_dns = "k8s-glodiosalbgroup-3fa7644b6c-1769285923.us-east-1.elb.amazonaws.com"
 
     providers = {
     aws.us_east_1 = aws.us_east_1
