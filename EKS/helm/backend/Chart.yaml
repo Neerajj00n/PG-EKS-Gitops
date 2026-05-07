@@ -4,6 +4,7 @@ description: Django backend application Helm chart with AWS ALB ingress
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
+icon: https://www.kindpng.com/picc/m/67-676296_straw-hat-luffy-clipart-one-piece-icon-png.png
 keywords:
   - django
   - python
