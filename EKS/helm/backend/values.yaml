@@ -16,6 +16,8 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "arn:aws:iam::887709589787:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/B778A621DDFFCB3B72981CE96D7179DF"
   name: ""
 
+
+
 env:
   LOG_LEVEL: "info"
   DEBUG: "False"
@@ -51,6 +53,7 @@ securityContext:
   readOnlyRootFilesystem: false
 
 service:
+  entrypoint : "/code/docker-entrypoint.sh"
   type: ClusterIP
   port: 80
   targetPort: 8000
