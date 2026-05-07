@@ -54,4 +54,4 @@ spec:
     - group: apps
       kind: Deployment
       jsonPointers:
-        - /spec/replicas  # Ignore HPA managed replicas
+        - /spec/replicas  
