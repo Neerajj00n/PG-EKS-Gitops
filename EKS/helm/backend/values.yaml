@@ -17,7 +17,7 @@ serviceAccount:
   name: ""
 
 env:
-    MONGO_URI: 'mongodb://localhost'  
+    MONGO_URI: 'mongodb://localhost'
     MONGO_DB_NAME: 'hound'  
     WEBHOOK_QUEUE_URL: '.'  
     PAYIN_WEBHOOK_QUEUE_URL: '.' 
@@ -39,6 +39,10 @@ env:
     REDIS_ENDPOINT: '.'
     REDIS_REPLICA_ENDPOINT: '.'
     EMAIL_HOST : '.'
+    EMAIL_USER : '.'
+    EMAIL_PASSWORD : '.'
+    BUCKET_NAME : '.'
+    AWS_REGION : '.'
 # Sensitive data from AWS Secrets Manager (via ExternalSecrets)
 envFrom:
   - secretRef:
