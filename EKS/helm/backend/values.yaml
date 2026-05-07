@@ -21,8 +21,8 @@ env:
     MONGO_DB_NAME: 'hound'  
     WEBHOOK_QUEUE_URL: '.'  
     PAYIN_WEBHOOK_QUEUE_URL: '.' 
-    PAYOUT_STATUS_ENQUIRY_QUEUE_URL: '.'  
-    PAYOUT_REFUND_QUEUE_URL: '.'  
+    PAYOUT_STATUS_ENQUIRY_QUEUE_URL: '.'
+    PAYOUT_REFUND_QUEUE_URL: '.'
     PAYOUT_LONG_RUNNING_STATUS_ENQUIRY_QUEUE_URL: '.'  
     ISERVEU_PAYOUT_STATUS_ENQUIRY_QUEUE_URL: '.'  
     BILLDESK_PAYOUT_STATUS_ENQUIRY_QUEUE_URL: '.'  
@@ -33,7 +33,9 @@ env:
     PG_FRONTENT_URL: '.' 
     PG_RESPONSE_PAGE_URL: '.'
     SABPAISA_CALLBACK_URL: '.'
-
+    DB_PASS_ARN: '.'
+    SALT_ENCRYPTION_KEY: '.'
+    AXISVAN_SECRET_KEY : '.'
 # Sensitive data from AWS Secrets Manager (via ExternalSecrets)
 envFrom:
   - secretRef:
