@@ -42,7 +42,7 @@ env:
     EMAIL_USER : '.'
     EMAIL_PASSWORD : '.'
     BUCKET_NAME : '.'
-    AWS_REGION : '.'
+    REGION_NAME : '.'
 # Sensitive data from AWS Secrets Manager (via ExternalSecrets)
 envFrom:
   - secretRef:
