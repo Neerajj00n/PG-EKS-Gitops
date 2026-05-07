@@ -7,7 +7,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "backend"
 
 serviceAccount:
   create: true
@@ -114,16 +114,7 @@ affinity:
 tolerations: []
 
 # Environment variables
-env:
-  DEBUG: "False"
-  ALLOWED_HOSTS: "api.glodios.com"
-  LOG_LEVEL: "info"
 
-# Secret environment variables (via External Secrets Operator or manual secrets)
-envFrom:
-  - secretRef:
-      name: backend-secrets
-      optional: true
 
 # Liveness and readiness probes
 livenessProbe:
