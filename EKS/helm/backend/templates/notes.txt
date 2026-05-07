@@ -29,3 +29,5 @@
 
 4. Check the health:
   kubectl exec -n {{ .Release.Namespace }} -it <pod-name> -- curl localhost:8000/health
+
+  
