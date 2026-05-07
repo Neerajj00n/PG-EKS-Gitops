@@ -36,6 +36,8 @@ env:
     DB_PASS_ARN: '.'
     SALT_ENCRYPTION_KEY: '.'
     AXISVAN_SECRET_KEY : '.'
+    REDIS_ENDPOINT: '.'
+    REDIS_REPLICA_ENDPOINT: '.'
 # Sensitive data from AWS Secrets Manager (via ExternalSecrets)
 envFrom:
   - secretRef:
