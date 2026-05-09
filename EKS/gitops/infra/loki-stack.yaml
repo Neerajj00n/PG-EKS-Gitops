@@ -22,8 +22,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: logging
-
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true

@@ -3,9 +3,9 @@
 # ============================================================
 prometheus:
   prometheusSpec:
-    retention: 30d
+    retention: 15d
     scrapeInterval: 30s
-    serviceMonitorSelectorNilUsesHelmValues: false
+   # serviceMonitorSelectorNilUsesHelmValues: false
 
     tolerations:
       - key: "dedicated"
@@ -22,14 +22,14 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 50Gi
+              storage: 20Gi
 
 # ============================================================
 # Grafana
 # ============================================================
 grafana:
-  deploymentStrategy:
-    type: Recreate
+  # deploymentStrategy:
+  #   type: Recreate
   enabled: true
   replicas: 1
   adminPassword: admin
@@ -55,11 +55,18 @@ grafana:
         - name: Prometheus
           type: prometheus
           url: http://kube-prometheus-stack-prometheus:9090
-          isDefault: false
+          access: proxy
+          isDefault: true
+          jsonData:
+            timeInterval: 30s
+
         - name: Loki
           type: loki
-          url: http://loki.logging.svc.cluster.local:3100 
+          url: http://loki:3100
+          access: proxy
+          isDefault: false
 
+          
   ingress:
     name: grafana-ingress
     enabled: true
