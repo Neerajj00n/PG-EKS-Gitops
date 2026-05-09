@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  serviceName: redis
+  replicas: {{ .Values.replicaCount }}
+  
+  selector:
+    matchLabels:
+      app: redis
+  
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: {{ .Values.architecture }}
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        
+        {{- if eq .Values.architecture "replication" }}
+        # Primary-Replica setup
+        command:
+          - redis-server
+          - "--slaveof"
+          - "NO"
+          - "ONE"
+        {{- else }}
+        # Single instance
+        command:
+          - redis-server
+        {{- end }}
+        
+        ports:
+        - containerPort: 6379
+          name: redis
+        
+        volumeMounts:
+        - name: data
+          mountPath: /data
+  
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size }}
