@@ -115,6 +115,8 @@ alertmanager:
 # ============================================================
 prometheusOperator:
   enabled: true
+  admissionWebhooks:
+    enabled: false
   tolerations:
     - key: "dedicated"
       operator: "Equal"
