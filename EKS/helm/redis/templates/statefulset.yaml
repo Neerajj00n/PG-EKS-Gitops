@@ -27,8 +27,6 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
-  
-  # StatefulSet creates PVCs automatically
   volumeClaimTemplates:
   - metadata:
       name: data
