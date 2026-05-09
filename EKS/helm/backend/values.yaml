@@ -18,7 +18,7 @@ serviceAccount:
 
 env:
     MONGO_URI: 'mongodb://localhost'
-    MONGO_DB_NAME: 'hound'  
+    MONGO_DB_NAME: 'mdb'  
     WEBHOOK_QUEUE_URL: '.'  
     PAYIN_WEBHOOK_QUEUE_URL: '.' 
     PAYOUT_STATUS_ENQUIRY_QUEUE_URL: '.'
