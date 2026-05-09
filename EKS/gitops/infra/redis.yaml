@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"  # Deploy early
+spec:
+  project: default
+  
+  source:
+    repoURL: https://github.com/Neerajj00n/PG-EKS-Gitops.git
+    path: EKS/helm/redis/
+    targetRevision: main
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
