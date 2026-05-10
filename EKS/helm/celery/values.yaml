@@ -15,16 +15,16 @@ serviceAccount:
   name: ""
 
 # Same env vars as backend
-env:
-  CELERY_BROKER_URL: "redis://redis-0.redis.redis.svc.cluster.local:6379"
-  CELERY_RESULT_BACKEND: "redis://redis-0.redis.redis.svc.cluster.local:6379"
-  LOG_LEVEL: "info"
-  WORKERS: "2"
+# env:
+#   CELERY_BROKER_URL: "redis://redis-0.redis.redis.svc.cluster.local:6379"
+#   CELERY_RESULT_BACKEND: "redis://redis-0.redis.redis.svc.cluster.local:6379"
+#   LOG_LEVEL: "info"
+#   WORKERS: "2"
 
   # From secrets
 envFrom:
   - configMapRef:
-      name: backend-config    # ← Uses same ConfigMap ✅
+      name: backend-config
   - secretRef:
       name: backend-secrets
 
