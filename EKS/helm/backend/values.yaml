@@ -101,10 +101,10 @@ ingress:
 resources:
   limits:
     cpu: 500m
-    memory: 512Mi
+    memory: 1.5Gi
   requests:
     cpu: 250m
-    memory: 256Mi
+    memory: 1Gi
 
 # Horizontal Pod Autoscaler
 autoscaling:
