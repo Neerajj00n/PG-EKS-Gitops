@@ -21,7 +21,7 @@ ingress:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
     alb.ingress.kubernetes.io/group.name: "glodios-alb-group"
   hosts:
-    - host: api.glodios.com
+    - host: apis.glodios.com
       paths:
         - path: /
           pathType: Prefix
