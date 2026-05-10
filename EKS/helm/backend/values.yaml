@@ -33,7 +33,7 @@ env:
     PG_FRONTENT_URL: '.' 
     PG_RESPONSE_PAGE_URL: '.'
     SABPAISA_CALLBACK_URL: '.'
-    DB_PASS_ARN: '.'
+    #DB_PASS_ARN: '.'
     SALT_ENCRYPTION_KEY: '.'
     AXISVAN_SECRET_KEY : '.'
     REDIS_ENDPOINT: 'redis://redis-0.redis.redis.svc.cluster.local:6379'
@@ -42,7 +42,7 @@ env:
     EMAIL_USER : '.'
     EMAIL_PASSWORD : '.'
     BUCKET_NAME : '.'
-    REGION_NAME : '.'
+    REGION_NAME : 'us-east-1'
 # Sensitive data from AWS Secrets Manager (via ExternalSecrets)
 envFrom:
   - secretRef:

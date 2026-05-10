@@ -16,7 +16,7 @@ spec:
         valueFiles:
           - $values/EKS/helm/obs/loki-stack-values.yaml
 
-    - repoURL: https://github.com/Neerajj00n/PG-EKS-Gitops.git # ← your repo
+    - repoURL: https://github.com/Neerajj00n/PG-EKS-Gitops.git
       targetRevision: HEAD
       ref: values
 
