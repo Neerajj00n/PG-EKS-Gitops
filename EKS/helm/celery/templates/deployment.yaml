@@ -39,22 +39,18 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         
         # Run Celery worker
-        command: ["/bin/bash"]
-        args:
-          - -c
-          - |
-            "celery",
-            "-A",
-            "crm_service",
-            "worker",
-            "-l",
-            "INFO",
-            "-Q",
-            "beat,celery",
-            "--without-heartbeat",
-            "--without-gossip",
-            "--without-mingle"
-        
+        command:
+        - celery
+        - -A
+        - crm_service
+        - worker
+        - -l
+        - INFO
+        - -Q
+        - beat,celery
+        - --without-heartbeat
+        - --without-gossip
+        - --without-mingle
         envFrom:
         - secretRef:
             name: backend-secrets
