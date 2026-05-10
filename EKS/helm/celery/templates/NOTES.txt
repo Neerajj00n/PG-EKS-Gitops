@@ -1,0 +1,10 @@
+Celery Worker deployed!
+
+Check status:
+  kubectl get pods -n backend -l app=celery
+
+Monitor:
+  kubectl logs -n backend -f -l app=celery
+
+Scale:
+  kubectl get hpa celery -n backend

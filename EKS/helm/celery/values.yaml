@@ -1,0 +1,141 @@
+replicaCount: 2
+
+image:
+  repository: 887709589787.dkr.ecr.us-east-1.amazonaws.com/production/backend
+  pullPolicy: Always
+  tag: "v1.0.3"
+
+nameOverride: ""
+fullnameOverride: "celery"
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::887709589787:role/backend-irsa-role"
+  name: ""
+
+# Same env vars as backend
+env:
+  CELERY_BROKER_URL: "redis://redis-0.redis.redis.svc.cluster.local:6379"
+  CELERY_RESULT_BACKEND: "redis://redis-0.redis.redis.svc.cluster.local:6379"
+  LOG_LEVEL: "info"
+  WORKERS: "2"
+
+# From secrets
+envFrom:
+  - secretRef:
+      name: backend-secrets
+      optional: false
+  - configMapRef:
+      name: backend-config
+      optional: false
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 800Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 75
+  
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+      - type: Pods
+        value: 3
+        periodSeconds: 60
+    
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 60
+
+nodeSelector: {}
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - celery
+          topologyKey: kubernetes.io/hostname
+
+tolerations: []
+
+livenessProbe:
+  exec:
+    command:
+      - celery
+      - -A
+      - crm_service
+      - inspect
+      - active
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  exec:
+    command:
+      - celery
+      - -A
+      - crm_service
+      - inspect
+      - active
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
