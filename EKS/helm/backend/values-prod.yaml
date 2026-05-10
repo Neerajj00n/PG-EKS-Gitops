@@ -1,6 +1,8 @@
-replicaCount: 3
+replicaCount: 2
 
 image:
+  repository: 887709589787.dkr.ecr.us-east-1.amazonaws.com/production/backend
+  pullPolicy: Always
   tag: "v1.0.3"
 
 service:
@@ -39,7 +41,7 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 85
   
   behavior:
     scaleUp:
