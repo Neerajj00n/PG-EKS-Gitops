@@ -21,14 +21,12 @@ env:
   LOG_LEVEL: "info"
   WORKERS: "2"
 
-# From secrets
+  # From secrets
 envFrom:
+  - configMapRef:
+      name: backend-config    # ← Uses same ConfigMap ✅
   - secretRef:
       name: backend-secrets
-      optional: false
-  - configMapRef:
-      name: backend-config
-      optional: false
 
 podAnnotations:
   prometheus.io/scrape: "true"
