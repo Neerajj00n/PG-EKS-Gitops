@@ -36,10 +36,25 @@ resources:
 
 autoscaling:
   enabled: true
-  minReplicas: 3
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
+  
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+    
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 60
 
 env:
   DEBUG: "False"
@@ -60,3 +75,5 @@ affinity:
               values:
                 - backend
         topologyKey: kubernetes.io/hostname
+
+
