@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backend-admin
+  namespace: backend
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backend-admin
+subjects:
+- kind: Group
+  name: backend-admins
+  apiGroup: rbac.authorization.k8s.io

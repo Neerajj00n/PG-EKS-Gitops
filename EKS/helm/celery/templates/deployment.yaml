@@ -59,12 +59,6 @@ spec:
             name: backend-config
             optional: false
         
-        # env:
-        # {{- range $key, $value := .Values.env }}
-        # - name: {{ $key }}
-        #   value: "{{ $value }}"
-        # {{- end }}
-        
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
         
